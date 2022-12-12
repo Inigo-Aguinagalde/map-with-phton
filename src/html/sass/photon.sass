@@ -1,0 +1,60 @@
+$font_path: 'https://cdnjs.cloudflare.com/ajax/libs/photon/0.1.2-alpha/fonts/'
+
+@import "node_modules/photonkit/sass/photon"
+
+
+
+
+
+.toolbar-header
+    background: rgb(237,255,139)
+    background: linear-gradient(130deg, rgba(237,255,139,1) 0%, rgba(33,122,32,1) 35%, rgba(0,212,255,1) 100%)
+
+.toolbar-header .title
+    text-shadow: 1px 1px 2px black
+    font-size: 25px
+
+.toolbar-footer .title
+    text-shadow: 1px 1px 1px black
+
+.nav-group-item
+    color: red
+    text-shadow: 1px 1px 1px black
+
+.sidebar 
+    overflow: scroll
+    max-width:15%
+    display: inline-block
+
+#text
+    word-wrap: break-word
+    text-overflow: ellipsis
+    border-style: solid
+
+.tab button 
+  background-color: inherit
+  float: left
+  border: none
+  outline: none
+  cursor: pointer
+  padding: 14px 16px
+  transition: 0.3s
+  font-size: 17px
+
+
+/* Change background color of buttons on hover */
+.tab button:hover 
+  background-color: #ddd
+
+
+/* Create an active/current tablink class */
+.tab button.active 
+  background-color: #ccc
+
+
+/* Style the tab content */
+.tabcontent 
+  display: none
+  padding: 6px 12px
+  border: 1px solid #ccc
+  border-top: none

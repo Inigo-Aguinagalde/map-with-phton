@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Photon</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.min.css"
+    integrity="sha512-KJRB1wUfcipHY35z9dEE+Jqd+pGCuQ2JMZmQPAjwPjXuzz9oL1pZm2cd79vyUgHQxvb9sFQ6f05DIz0IqcG1Jw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="sass/photon.sass">
+
+</head>
+
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/leaflet.js"
+    integrity="sha512-Dqm3h1Y4qiHUjbhxTuBGQsza0Tfppn53SHlu/uj1f+RT+xfShfe7r6czRf5r2NmllO2aKx+tYJgoxboOkn1Scg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <div class="window">
+    <header class="toolbar toolbar-header">
+      <h1 class="title">Header with actions</h1>
+
+      <div class="toolbar-actions">
+        <div class="btn-group">
+        </div>
+
+      </div>
+    </header>
+
+
+    <div class="window-content">
+      <div class="pane-group">
+        <div id="sidebar" class="pane-sm sidebar">
+          <div class="tab">
+            <button class="tablinks" onclick="openCity(event, 'EU')">EU</button>
+            <button class="tablinks" onclick="openCity(event, 'ES')">ES</button>
+          </div>
+          <br>
+          <br>
+          <div id="EU" class="tabcontent">
+            
+          </div>
+          
+          <div id="ES" class="tabcontent">
+
+          </div>
+
+        </div>
+        <div id="map" class="pane">
+
+
+        </div>
+      </div>
+    </div>
+    <footer class="toolbar toolbar-footer">
+      <div class="toolbar-actions">
+        <button class="btn btn-default">
+          Cancel
+        </button>
+
+        <button class="btn btn-primary pull-right">
+          Save
+        </button>
+      </div>
+    </footer>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module" src="js/photonMap.js"></script>
+  <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    </script>
+</body>
+
+</html>
