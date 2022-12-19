@@ -4,12 +4,65 @@ var ofertasES = 0;
 var ofertasEU = 0;
 const responseES = myJson;
 const responseEU = myJsonEU;
-
+var latLong = new Set()
 var map = L.map('map').setView([43.299288, -1.883533], 12);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-L.marker([51.5, -0.09]).addTo(map)
+const options = { method: 'GET' };
+
+var ciudades = new Set()
+
+responseES.filter(function (e) {
+
+    ciudades.add(e.municipio);
+
+
+})
+ciudades = Array.from(ciudades)
+
+console.log(ciudades)
+
+async function getJSON() {
+
+
+    ciudades.forEach(async element => {
+        await fetch(`http://api.geonames.org/searchJSON?name=${element}&username=ikbel`, options)//ikcdd, ikbel
+            .then(response => response.json())
+            .then(response => filter(response))
+            .catch(err => console.error(err));
+
+    });
+
+
+
+}
+
+getJSON();
+
+
+
+function filter(response) {
+
+    const entries = Object.entries(response);
+
+
+    entries[1][1].forEach(element => {
+
+        if (element['adminName1'] == 'Basque Country' && element['fclName'] == 'city, village,...') {
+
+            L.marker([element['lat'], [element['lng']]]).addTo(map).on('click', function (e) { filtrarOfertas(element['name']) }).bindPopup(`<canvas id=${element['name']}></canvas>`);
+            return;
+
+        }
+
+
+    });
+
+}
+
+
+
 
 function filtrarOfertas(ciudad) {
     ciudad = ciudad.toUpperCase();
@@ -19,12 +72,23 @@ function filtrarOfertas(ciudad) {
     let sIrtera = "";
     ofertasES = 0;
     ofertasEU = 0;
+    if (ciudad.includes('/')) {
+        ciudad = ciudad.split("/")
+        ciudad[0]= ciudad[0].replace(" ","");
+        city = ciudad[0];
+        city2 = ciudad[1].replace(" ","");
+    } else {
+        city = ciudad;
+    }
 
+
+    console.log(ciudad)
     responseES.filter(function (e) {
 
-        if (e.municipio == ciudad) {
-            ofertasES = ofertasES + 1;
 
+        if (e.municipio.includes(city) || e.municipio.includes(ciudad[1].replace(" ",""))) {
+            ofertasES = ofertasES + 1;
+            console.log(e.municipio)
 
             sSalida += "<div style='margin-top: 30px' id='text'>"
             sSalida += `<p><a href="${e.url}" target="_blank">${e.desEmpleo}</a></p>`;
@@ -35,7 +99,7 @@ function filtrarOfertas(ciudad) {
 
     responseEU.filter(function (e) {
 
-        if (e.municipio == ciudad) {
+        if (e.municipio.includes(city) || e.municipio.includes(ciudad[1].replace(" ",""))) {
             ofertasEU = ofertasEU + 1;
 
             sIrtera += "<div style='margin-top: 20px' id='text'>"
@@ -52,20 +116,11 @@ function filtrarOfertas(ciudad) {
 }
 
 
-L.marker([43.338147, -1.78885]).addTo(map).on('click', function (e) { filtrarOfertas('IRUN') }).bindPopup('<canvas id="IRUN"></canvas>');//Irun
-
-L.marker([43.313044, -1.978032]).addTo(map).on('click', function (e) { filtrarOfertas('DONOSTIA/SAN SEBASTIÁN') }).bindPopup('<canvas id="DONOSTIA"></canvas>');//Donosti
-
-L.marker([43.366229, -1.793868]).addTo(map).on('click', function (e) { filtrarOfertas('HONDARRIBIA') }).bindPopup('<canvas id="HONDARRIBIA"></canvas>');//Honsarribi
-
-L.marker([43.310046, -1.902431]).addTo(map).on('click', function (e) { filtrarOfertas('ERRENTERIA') }).bindPopup('<canvas id="ERRENTERIA"></canvas>');//Errenteria
-
-
 
 let chart;
 function popUps(municipio) {
     const ctx = document.getElementById(municipio);
-    console.log(municipio)
+
     if (chart) {
         chart.destroy();
     }
@@ -78,7 +133,7 @@ function popUps(municipio) {
             data: {
                 labels: ['ES', 'EU'],
                 datasets: [{
-                    label: 'Ofertas '+municipio,
+                    label: 'Ofertas ' + municipio,
                     data: [ofertasES, ofertasEU],
                     borderWidth: 1
                 }]
@@ -95,15 +150,15 @@ function popUps(municipio) {
     }
 
 }
-let municipio ="";
-map.on("popupopen", function (e) {
-    let canvas = document.getElementsByTagName('canvas');    
-   
-    if(canvas[0].id == municipio){
+let municipio = "";
+map.on("popupopen", function () {
+    let canvas = document.getElementsByTagName('canvas');
+
+    if (canvas[0].id == municipio) {
         municipio = canvas[1].id;
-    }else{
+    } else {
         municipio = canvas[0].id;
     }
-    
+
     popUps(municipio);
 })
