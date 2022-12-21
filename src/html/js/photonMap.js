@@ -4,7 +4,7 @@ var ofertasES = 0;
 var ofertasEU = 0;
 const responseES = myJson;
 const responseEU = myJsonEU;
-var latLong = new Set()
+var local = new Set()
 var map = L.map('map').setView([43.299288, -1.883533], 12);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
@@ -21,13 +21,17 @@ responseES.filter(function (e) {
 })
 ciudades = Array.from(ciudades)
 
-console.log(ciudades)
+    getJSON();
+
+    
+
+
 
 async function getJSON() {
 
 
     ciudades.forEach(async element => {
-        await fetch(`http://api.geonames.org/searchJSON?name=${element}&username=ikbel`, options)//ikcdd, ikbel
+        await fetch(`http://api.geonames.org/searchJSON?name=${element}&username=ikcdd`, options)//ikcdd, ikbel
             .then(response => response.json())
             .then(response => filter(response))
             .catch(err => console.error(err));
@@ -35,10 +39,10 @@ async function getJSON() {
     });
 
 
+    
+
 
 }
-
-getJSON();
 
 
 
@@ -46,18 +50,24 @@ function filter(response) {
 
     const entries = Object.entries(response);
 
+   
 
-    entries[1][1].forEach(element => {
+    
+        entries[1][1].forEach(element => {
 
-        if (element['adminName1'] == 'Basque Country' && element['fclName'] == 'city, village,...') {
+            if (element['adminName1'] == 'Basque Country' && element['fclName'] == 'city, village,...') {
+    
+                L.marker([element['lat'], [element['lng']]]).addTo(map).on('click', function (e) { filtrarOfertas(element['name']) }).bindPopup(`<canvas id=${element['name']}></canvas>`);
+                
+                return;
+                
+            }
+    
+    
+        });
+    
 
-            L.marker([element['lat'], [element['lng']]]).addTo(map).on('click', function (e) { filtrarOfertas(element['name']) }).bindPopup(`<canvas id=${element['name']}></canvas>`);
-            return;
-
-        }
-
-
-    });
+    
 
 }
 
@@ -72,6 +82,8 @@ function filtrarOfertas(ciudad) {
     let sIrtera = "";
     ofertasES = 0;
     ofertasEU = 0;
+    let city = "";
+    let city2 = "";
     if (ciudad.includes('/')) {
         ciudad = ciudad.split("/")
         ciudad[0]= ciudad[0].replace(" ","");
@@ -82,13 +94,13 @@ function filtrarOfertas(ciudad) {
     }
 
 
-    console.log(ciudad)
+
     responseES.filter(function (e) {
 
 
         if (e.municipio.includes(city) || e.municipio.includes(ciudad[1].replace(" ",""))) {
             ofertasES = ofertasES + 1;
-            console.log(e.municipio)
+
 
             sSalida += "<div style='margin-top: 30px' id='text'>"
             sSalida += `<p><a href="${e.url}" target="_blank">${e.desEmpleo}</a></p>`;
