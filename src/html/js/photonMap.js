@@ -82,25 +82,19 @@ function filtrarOfertas(ciudad) {
     let sIrtera = "";
     ofertasES = 0;
     ofertasEU = 0;
-    let city = "";
-    let city2 = "";
     if (ciudad.includes('/')) {
         ciudad = ciudad.split("/")
-        ciudad[0]= ciudad[0].replace(" ","");
-        city = ciudad[0];
-        city2 = ciudad[1].replace(" ","");
+        city = ciudad[0].replace(" ","")+"/"+ciudad[1].replace(" ","")
     } else {
         city = ciudad;
     }
 
-
-
     responseES.filter(function (e) {
 
+        e.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 
-        if (e.municipio.includes(city) || e.municipio.includes(ciudad[1].replace(" ",""))) {
-            ofertasES = ofertasES + 1;
-
+        if (e.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city) {
+            offetsES = offetsES + 1;
 
             sSalida += "<div style='margin-top: 30px' id='text'>"
             sSalida += `<p><a href="${e.url}" target="_blank">${e.desEmpleo}</a></p>`;
@@ -109,18 +103,17 @@ function filtrarOfertas(ciudad) {
         }
     });
 
-    responseEU.filter(function (e) {
+    responseEU.filter(function (a) {
 
-        if (e.municipio.includes(city) || e.municipio.includes(ciudad[1].replace(" ",""))) {
-            ofertasEU = ofertasEU + 1;
+        if (a.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city) {
+            offetsEU = offetsEU + 1;
 
             sIrtera += "<div style='margin-top: 20px' id='text'>"
-            sIrtera += `<p><a href="${e.url}" target="_blank">${e.desEmpleo}</a></p>`;
-            sIrtera += `<p>${e.desPuesto}</p>`
+            sIrtera += `<p><a href="${a.url}" target="_blank">${a.desEmpleo}</a></p>`;
+            sIrtera += `<p>${a.desPuesto}</p>`
             sIrtera += "</div>"
         }
     });
-
 
     document.getElementById('EU').innerHTML = sIrtera;
 
