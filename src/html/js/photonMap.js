@@ -21,14 +21,10 @@ responseES.filter(function (e) {
 })
 ciudades = Array.from(ciudades)
 
-    getJSON();
-
-    
-
+getJSON();
 
 
 async function getJSON() {
-
 
     ciudades.forEach(async element => {
         await fetch(`http://api.geonames.org/searchJSON?name=${element}&username=ikcdd`, options)//ikcdd, ikbel
@@ -38,40 +34,25 @@ async function getJSON() {
 
     });
 
-
-    
-
-
 }
-
-
 
 function filter(response) {
 
     const entries = Object.entries(response);
 
-   
+    entries[1][1].forEach(element => {
 
-    
-        entries[1][1].forEach(element => {
+        if (element['adminName1'] == 'Basque Country' && element['fclName'] == 'city, village,...') {
 
-            if (element['adminName1'] == 'Basque Country' && element['fclName'] == 'city, village,...') {
-    
-                L.marker([element['lat'], [element['lng']]]).addTo(map).on('click', function (e) { filtrarOfertas(element['name']) }).bindPopup(`<canvas id=${element['name']}></canvas>`);
-                
-                return;
-                
-            }
-    
-    
-        });
-    
+            L.marker([element['lat'], [element['lng']]]).addTo(map).on('click', function (e) { filtrarOfertas(element['name']) }).bindPopup(`<canvas id=${element['name']}></canvas>`);
 
-    
+            return;
+
+        }
+
+    });
 
 }
-
-
 
 
 function filtrarOfertas(ciudad) {
@@ -84,18 +65,18 @@ function filtrarOfertas(ciudad) {
     ofertasEU = 0;
     if (ciudad.includes('/')) {
         ciudad = ciudad.split("/")
-        city = ciudad[0].replace(" ","")+"/"+ciudad[1].replace(" ","")
+        city = ciudad[0].replace(" ", "") + "/" + ciudad[1].replace(" ", "")
     } else {
         city = ciudad;
     }
 
     responseES.filter(function (e) {
 
-        e.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        console.log(city)
 
-        if (e.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city) {
-            offetsES = offetsES + 1;
-
+        if (e.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city || e.municipio.includes(city)==true) {
+            ofertasES = ofertasES + 1;
+            console.log(e.municipio);
             sSalida += "<div style='margin-top: 30px' id='text'>"
             sSalida += `<p><a href="${e.url}" target="_blank">${e.desEmpleo}</a></p>`;
             sSalida += `<p>${e.desPuesto}</p>`
@@ -105,8 +86,8 @@ function filtrarOfertas(ciudad) {
 
     responseEU.filter(function (a) {
 
-        if (a.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city) {
-            offetsEU = offetsEU + 1;
+        if (a.municipio.normalize("NFD").replace(/[\u0300-\u036f]/g, "") == city || a.municipio.includes(city)==true){
+            ofertasEU = ofertasEU + 1;
 
             sIrtera += "<div style='margin-top: 20px' id='text'>"
             sIrtera += `<p><a href="${a.url}" target="_blank">${a.desEmpleo}</a></p>`;
